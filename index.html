@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Diagnóstico de Plano de Saúde Empresarial</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+
+body{
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  background:#fff;
+  color:#111;
+  min-height:100vh;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+
+.quiz-container{
+  width:100%;
+  max-width:600px;
+  padding:40px 24px;
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  justify-content:center;
+}
+
+/* ---- PROGRESS BAR ---- */
+.progress-bar{
+  width:100%;
+  height:4px;
+  background:#eee;
+  border-radius:4px;
+  margin-bottom:60px;
+  position:fixed;
+  top:0;left:0;
+  z-index:10;
+}
+.progress-fill{
+  height:100%;
+  background:#111;
+  border-radius:4px;
+  transition:width 0.4s ease;
+}
+.step-count{
+  position:fixed;
+  top:14px;
+  right:24px;
+  font-size:13px;
+  color:#999;
+  z-index:10;
+}
+
+/* ---- SCREENS ---- */
+.screen{
+  display:none;
+  animation:fadeIn 0.4s ease;
+}
+.screen.active{
+  display:block;
+}
+@keyframes fadeIn{
+  from{opacity:0;transform:translateY(16px)}
+  to{opacity:1;transform:translateY(0)}
+}
+
+/* ---- INTRO ---- */
+.intro h1{
+  font-size:clamp(36px,8vw,56px);
+  font-weight:600;
+  letter-spacing:-2px;
+  line-height:1.1;
+  margin-bottom:16px;
+}
+.intro p{
+  font-size:20px;
+  color:#666;
+  margin-bottom:40px;
+  line-height:1.5;
+}
+.intro .tag{
+  display:inline-block;
+  background:#f5f5f5;
+  padding:6px 14px;
+  border-radius:20px;
+  font-size:13px;
+  color:#888;
+  margin-bottom:24px;
+}
+
+/* ---- QUESTIONS ---- */
+.question-title{
+  font-size:28px;
+  font-weight:600;
+  letter-spacing:-1px;
+  margin-bottom:8px;
+  line-height:1.3;
+}
+.question-subtitle{
+  font-size:16px;
+  color:#888;
+  margin-bottom:32px;
+}
+.options{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+}
+.option{
+  padding:18px 22px;
+  border:1.5px solid #e0e0e0;
+  border-radius:14px;
+  font-size:17px;
+  cursor:pointer;
+  transition:all 0.2s ease;
+  background:white;
+  text-align:left;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.option:hover{
+  border-color:#111;
+  background:#fafafa;
+}
+.option.selected{
+  border-color:#111;
+  background:#111;
+  color:white;
+}
+.option-icon{
+  font-size:20px;
+  flex-shrink:0;
+}
+
+/* ---- LEAD FORM ---- */
+.lead-form h2{
+  font-size:28px;
+  font-weight:600;
+  letter-spacing:-1px;
+  margin-bottom:6px;
+}
+.lead-form .subtitle{
+  font-size:16px;
+  color:#888;
+  margin-bottom:32px;
+}
+.field{
+  margin-bottom:18px;
+  text-align:left;
+}
+.field label{
+  display:block;
+  font-size:13px;
+  font-weight:500;
+  color:#888;
+  margin-bottom:6px;
+  text-transform:uppercase;
+  letter-spacing:0.5px;
+}
+.field input{
+  width:100%;
+  padding:16px 18px;
+  border:1.5px solid #e0e0e0;
+  border-radius:12px;
+  font-size:17px;
+  font-family:inherit;
+  outline:none;
+  transition:border 0.2s;
+}
+.field input:focus{
+  border-color:#111;
+}
+
+/* ---- BUTTONS ---- */
+.btn-primary{
+  display:block;
+  width:100%;
+  padding:18px;
+  background:#111;
+  color:white;
+  border:none;
+  border-radius:40px;
+  font-size:18px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+  margin-top:24px;
+}
+.btn-primary:hover{
+  background:#333;
+  transform:scale(1.02);
+}
+.btn-primary:disabled{
+  background:#ccc;
+  cursor:not-allowed;
+  transform:none;
+}
+
+/* ---- RESULT ---- */
+.result h2{
+  font-size:32px;
+  font-weight:600;
+  letter-spacing:-1px;
+  margin-bottom:8px;
+}
+.result .subtitle{
+  color:#888;
+  font-size:16px;
+  margin-bottom:32px;
+}
+.result-card{
+  background:#f8f8f8;
+  border-radius:16px;
+  padding:28px 24px;
+  text-align:left;
+  margin-bottom:24px;
+}
+.result-card h3{
+  font-size:18px;
+  margin-bottom:16px;
+  color:#111;
+}
+.result-item{
+  display:flex;
+  justify-content:space-between;
+  padding:10px 0;
+  border-bottom:1px solid #eee;
+  font-size:15px;
+}
+.result-item:last-child{border:none}
+.result-item .label{color:#888}
+.result-item .value{font-weight:500;text-align:right;max-width:60%}
+
+.btn-whatsapp{
+  display:block;
+  width:100%;
+  padding:18px;
+  background:#25D366;
+  color:white;
+  border:none;
+  border-radius:40px;
+  font-size:18px;
+  font-weight:500;
+  cursor:pointer;
+  transition:all 0.2s;
+  font-family:inherit;
+  text-decoration:none;
+  text-align:center;
+}
+.btn-whatsapp:hover{
+  background:#1da851;
+  transform:scale(1.02);
+}
+
+.privacy{
+  font-size:12px;
+  color:#bbb;
+  margin-top:16px;
+  line-height:1.4;
+}
+
+/* ---- MOBILE ---- */
+@media(max-width:500px){
+  .quiz-container{padding:30px 18px}
+  .question-title{font-size:24px}
+  .option{padding:15px 18px;font-size:16px}
+}
+</style>
+</head>
+<body>
+
+<div class="quiz-container">
+
+  <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
+  <span class="step-count" id="stepCount"></span>
+
+  <!-- INTRO -->
+  <div class="screen active" id="intro">
+    <div class="intro">
+      <div class="tag">Leva menos de 1 minuto</div>
+      <h1>Qual plano de saúde ideal para sua empresa?</h1>
+      <p>Responda algumas perguntas e descubra a melhor opção para o seu time.</p>
+      <button class="btn-primary" onclick="startQuiz()">Iniciar diagnóstico</button>
+    </div>
+  </div>
+
+  <!-- QUESTIONS (geradas por JS) -->
+  <div class="screen" id="questionScreen">
+    <p class="question-title" id="questionTitle"></p>
+    <p class="question-subtitle" id="questionSubtitle"></p>
+    <div class="options" id="optionsContainer"></div>
+  </div>
+
+  <!-- LEAD FORM -->
+  <div class="screen" id="leadForm">
+    <div class="lead-form">
+      <h2>Quase lá!</h2>
+      <p class="subtitle">Preencha seus dados para receber o diagnóstico personalizado.</p>
+      <form id="diagForm" name="diagnostico-plano" method="POST" data-netlify="true" netlify-honeypot="bot-field">
+        <input type="hidden" name="form-name" value="diagnostico-plano">
+        <input type="hidden" name="bot-field">
+        <input type="hidden" name="respostas" id="respostasHidden">
+        <div class="field">
+          <label>Seu nome</label>
+          <input type="text" name="nome" id="leadNome" placeholder="Ex: Maria Silva" required>
+        </div>
+        <div class="field">
+          <label>WhatsApp</label>
+          <input type="tel" name="whatsapp" id="leadWhatsapp" placeholder="(21) 99999-9999" required>
+        </div>
+        <div class="field">
+          <label>E-mail</label>
+          <input type="email" name="email" id="leadEmail" placeholder="maria@empresa.com.br" required>
+        </div>
+        <div class="field">
+          <label>Nome da empresa</label>
+          <input type="text" name="empresa" id="leadEmpresa" placeholder="Ex: Tech Solutions Ltda">
+        </div>
+        <button type="submit" class="btn-primary">Ver meu diagnóstico</button>
+        <p class="privacy">Seus dados estão seguros. Não compartilhamos com terceiros.</p>
+      </form>
+    </div>
+  </div>
+
+  <!-- RESULT -->
+  <div class="screen" id="resultScreen">
+    <div class="result">
+      <h2>Seu diagnóstico está pronto</h2>
+      <p class="subtitle">Veja o resumo e fale com nossa especialista.</p>
+      <div class="result-card" id="resultCard"></div>
+      <a class="btn-whatsapp" id="whatsappLink" href="#" target="_blank">
+        Receber proposta no WhatsApp
+      </a>
+      <p class="privacy">Bruna vai analisar seu perfil e enviar as melhores opções.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+/* ============================================================
+   CONFIGURACAO DO QUIZ
+   Edite as perguntas, subtitulos, icones e opcoes abaixo.
+   Para adicionar/remover perguntas, basta alterar este array.
+   ============================================================ */
+
+const SEU_WHATSAPP = "5521965950086";
+
+const PERGUNTAS = [
+  {
+    titulo: "Quantos funcionários sua empresa tem?",
+    subtitulo: "Isso define a categoria do plano",
+    opcoes: [
+      { icone: "👤", texto: "1 a 29 funcionários" },
+      { icone: "👥", texto: "30 a 99 funcionários" },
+      { icone: "🏢", texto: "100 a 199 funcionários" },
+      { icone: "🏗️", texto: "200 ou mais" },
+    ]
+  },
+  {
+    titulo: "Sua empresa já possui plano de saúde?",
+    subtitulo: "Entender o cenário atual ajuda na recomendação",
+    opcoes: [
+      { icone: "🔄", texto: "Sim, quero trocar de operadora" },
+      { icone: "📊", texto: "Sim, quero comparar com outras opções" },
+      { icone: "🆕", texto: "Não, quero contratar o primeiro" },
+    ]
+  },
+  {
+    titulo: "Qual região do Rio de Janeiro?",
+    subtitulo: "A rede credenciada varia por região",
+    opcoes: [
+      { icone: "🏙️", texto: "Capital (zona sul, norte, oeste, centro)" },
+      { icone: "🌆", texto: "Baixada Fluminense" },
+      { icone: "🌊", texto: "Niterói e São Gonçalo" },
+      { icone: "🌿", texto: "Interior do estado" },
+    ]
+  },
+  {
+    titulo: "O que é mais importante para a empresa?",
+    subtitulo: "Selecione a prioridade principal",
+    opcoes: [
+      { icone: "💰", texto: "Menor custo possível" },
+      { icone: "🏥", texto: "Melhor rede de hospitais" },
+      { icone: "⚖️", texto: "Equilíbrio entre custo e cobertura" },
+      { icone: "💳", texto: "Reembolso alto para livre escolha" },
+    ]
+  },
+  {
+    titulo: "Qual o orçamento mensal por funcionário?",
+    subtitulo: "Valor aproximado que a empresa pode investir",
+    opcoes: [
+      { icone: "📗", texto: "Até R$ 200" },
+      { icone: "📘", texto: "R$ 200 a R$ 400" },
+      { icone: "📙", texto: "R$ 400 a R$ 800" },
+      { icone: "📕", texto: "Acima de R$ 800" },
+    ]
+  },
+  {
+    titulo: "Precisa incluir dependentes?",
+    subtitulo: "Cônjuge e filhos dos funcionários",
+    opcoes: [
+      { icone: "👨‍👩‍👧", texto: "Sim, com dependentes" },
+      { icone: "👤", texto: "Não, só titulares" },
+      { icone: "🤔", texto: "Ainda não sei, preciso de orientação" },
+    ]
+  },
+];
+
+/* ============================================================
+   FIM DA CONFIGURACAO — Nao precisa alterar nada abaixo
+   ============================================================ */
+
+let currentStep = 0;
+const respostas = [];
+const totalSteps = PERGUNTAS.length + 2; // perguntas + form + resultado
+
+function updateProgress() {
+  const pct = ((currentStep + 1) / totalSteps) * 100;
+  document.getElementById("progressFill").style.width = pct + "%";
+  if (currentStep > 0 && currentStep <= PERGUNTAS.length) {
+    document.getElementById("stepCount").textContent = currentStep + " de " + PERGUNTAS.length;
+  } else {
+    document.getElementById("stepCount").textContent = "";
+  }
+}
+
+function showScreen(id) {
+  document.querySelectorAll(".screen").forEach(s => s.classList.remove("active"));
+  document.getElementById(id).classList.add("active");
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function startQuiz() {
+  currentStep = 1;
+  renderQuestion();
+  showScreen("questionScreen");
+  updateProgress();
+}
+
+function renderQuestion() {
+  const q = PERGUNTAS[currentStep - 1];
+  document.getElementById("questionTitle").textContent = q.titulo;
+  document.getElementById("questionSubtitle").textContent = q.subtitulo;
+
+  const container = document.getElementById("optionsContainer");
+  container.innerHTML = "";
+
+  q.opcoes.forEach((opt, i) => {
+    const div = document.createElement("div");
+    div.className = "option";
+    div.innerHTML = '<span class="option-icon">' + opt.icone + '</span>' + opt.texto;
+    div.onclick = () => selectOption(div, opt.texto, q.titulo);
+    container.appendChild(div);
+  });
+}
+
+function selectOption(el, texto, pergunta) {
+  document.querySelectorAll(".option").forEach(o => o.classList.remove("selected"));
+  el.classList.add("selected");
+
+  respostas[currentStep - 1] = { pergunta, resposta: texto };
+
+  setTimeout(() => {
+    currentStep++;
+    if (currentStep <= PERGUNTAS.length) {
+      renderQuestion();
+      showScreen("questionScreen");
+    } else {
+      showScreen("leadForm");
+    }
+    updateProgress();
+  }, 300);
+}
+
+// Mascara WhatsApp
+document.getElementById("leadWhatsapp").addEventListener("input", function(e) {
+  let v = e.target.value.replace(/\D/g, "");
+  if (v.length > 11) v = v.slice(0, 11);
+  if (v.length > 7) v = "(" + v.slice(0,2) + ") " + v.slice(2,7) + "-" + v.slice(7);
+  else if (v.length > 2) v = "(" + v.slice(0,2) + ") " + v.slice(2);
+  e.target.value = v;
+});
+
+// Submit form
+document.getElementById("diagForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const nome = document.getElementById("leadNome").value.trim();
+  const whatsapp = document.getElementById("leadWhatsapp").value.trim();
+  const email = document.getElementById("leadEmail").value.trim();
+  const empresa = document.getElementById("leadEmpresa").value.trim();
+
+  // Montar resumo das respostas
+  const resumoArr = respostas.map((r, i) => (i + 1) + ". " + r.pergunta + "\n   → " + r.resposta);
+  const resumoText = resumoArr.join("\n\n");
+
+  document.getElementById("respostasHidden").value = resumoText;
+
+  // Enviar para Netlify Forms
+  const formData = new FormData(this);
+  fetch("/", {
+    method: "POST",
+    headers: { "Content-Type": "application/x-www-form-urlencoded" },
+    body: new URLSearchParams(formData).toString()
+  }).catch(() => {});
+
+  // Montar card de resultado
+  const card = document.getElementById("resultCard");
+  let html = '<h3>Resumo do diagnóstico</h3>';
+  respostas.forEach(r => {
+    html += '<div class="result-item"><span class="label">' + r.pergunta.replace(/\?/g,"") + '</span><span class="value">' + r.resposta + '</span></div>';
+  });
+  html += '<div class="result-item"><span class="label">Empresa</span><span class="value">' + (empresa || "—") + '</span></div>';
+  html += '<div class="result-item"><span class="label">Contato</span><span class="value">' + nome + '</span></div>';
+  card.innerHTML = html;
+
+  // Montar link WhatsApp com dados
+  const msg = "🏥 *NOVO LEAD — Diagnóstico de Plano de Saúde*\n\n"
+    + "👤 *Nome:* " + nome + "\n"
+    + "📱 *WhatsApp:* " + whatsapp + "\n"
+    + "📧 *E-mail:* " + email + "\n"
+    + "🏢 *Empresa:* " + (empresa || "Não informado") + "\n\n"
+    + "📋 *Respostas do Quiz:*\n\n"
+    + resumoText + "\n\n"
+    + "---\n"
+    + "Enviado pelo diagnóstico online";
+
+  document.getElementById("whatsappLink").href = "https://api.whatsapp.com/send?phone=" + SEU_WHATSAPP + "&text=" + encodeURIComponent(msg);
+
+  // Mostrar resultado
+  currentStep++;
+  showScreen("resultScreen");
+  updateProgress();
+});
+
+updateProgress();
+</script>
+
+</body>
+</html>
