@@ -315,10 +315,10 @@ body{
           <input type="email" name="email" id="leadEmail" placeholder="maria@empresa.com.br" required>
         </div>
         <div class="field">
-          <label>Nome da empresa</label>
-          <input type="text" name="empresa" id="leadEmpresa" placeholder="Ex: Tech Solutions Ltda">
+          <label>CNPJ</label>
+          <input type="text" name="empresa" id="leadEmpresa" placeholder="Ex: 13.000.000.0001/79">
         </div>
-        <button type="submit" class="btn-primary">Ver meu diagnóstico</button>
+        <button type="submit" class="btn-primary">Solicitar meu diagnóstico</button>
         <p class="privacy">Seus dados estão seguros. Não compartilhamos com terceiros.</p>
       </form>
     </div>
@@ -327,7 +327,7 @@ body{
   <!-- RESULT -->
   <div class="screen" id="resultScreen">
     <div class="result">
-      <h2>Seu diagnóstico está pronto</h2>
+      <h2>Com essas informações o especialista irá te auxiliar a descobrir a melhor opção para sua empresa.</h2>
       <p class="subtitle">Veja o resumo e fale com nossa especialista.</p>
       <div class="result-card" id="resultCard"></div>
       <a class="btn-whatsapp" id="whatsappLink" href="#" target="_blank">
@@ -353,7 +353,7 @@ const SEU_WHATSAPP = "5521965950086";
    Siga as instrucoes do arquivo INSTRUCOES-GOOGLE-SHEETS.txt
    e cole a URL do script aqui entre as aspas:
    ============================================================ */
-const GOOGLE_SCRIPT_URL = "COLE_SUA_URL_AQUI";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCe3IKv2gzAI8daU0oE7u3pzIgWMN52hsVCb8anQOpBAIaN50f4ppZcRCCiYahM2SDYQ/exec";
 
 const PERGUNTAS = [
   {
@@ -507,7 +507,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
   document.getElementById("respostasHidden").value = resumoText;
 
   // Salvar no Google Sheets automaticamente
-  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "COLE_SUA_URL_AQUI") {
+  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbwCe3IKv2gzAI8daU0oE7u3pzIgWMN52hsVCb8anQOpBAIaN50f4ppZcRCCiYahM2SDYQ/exec") {
     const dados = {
       data: new Date().toLocaleString("pt-BR"),
       nome: nome,
