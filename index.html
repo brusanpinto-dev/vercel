@@ -357,7 +357,7 @@ const SEU_WHATSAPP = "5521965950086";
    Siga as instrucoes do arquivo INSTRUCOES-GOOGLE-SHEETS.txt
    e cole a URL do script aqui entre as aspas:
    ============================================================ */
-const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwCe3IKv2gzAI8daU0oE7u3pzIgWMN52hsVCb8anQOpBAIaN50f4ppZcRCCiYahM2SDYQ/exec";
+const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygfYaeNXicLPkSTb-Ex7T9SppOwolulyh_DEvYMIDQa3NRsaiGSUjKIppvvs5BShVV/exec";
 
 const PERGUNTAS = [
   {
@@ -511,7 +511,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
   document.getElementById("respostasHidden").value = resumoText;
 
   // Salvar no Google Sheets automaticamente
-  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "COLE_SUA_URL_AQUI") {
+  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbygfYaeNXicLPkSTb-Ex7T9SppOwolulyh_DEvYMIDQa3NRsaiGSUjKIppvvs5BShVV/exec") {
     const dados = {
       data: new Date().toLocaleString("pt-BR"),
       nome: nome,
