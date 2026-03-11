@@ -350,7 +350,7 @@ body{
       <h2>Seu diagnóstico está pronto</h2>
       <p class="subtitle">Veja o resumo e fale com nossa especialista.</p>
       <div class="result-card" id="resultCard"></div>
-      <a class="btn-whatsapp" id="whatsappLink" href="#" target="_blank">
+      <a class="btn-whatsapp" id="whatsappLink" href="#" target="_blank" onclick="fbq('track', 'Contact');">
         Receber proposta no WhatsApp
       </a>
       <p class="privacy">Bruna vai analisar seu perfil e enviar as melhores opções.</p>
@@ -461,6 +461,7 @@ function showScreen(id) {
 }
 
 function startQuiz() {
+  fbq('track', 'ViewContent');
   currentStep = 1;
   renderQuestion();
   showScreen("questionScreen");
@@ -496,6 +497,7 @@ function selectOption(el, texto, pergunta) {
       renderQuestion();
       showScreen("questionScreen");
     } else {
+      fbq('trackCustom', 'QuizCompleto');
       showScreen("leadForm");
     }
     updateProgress();
@@ -567,6 +569,8 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
 
   document.getElementById("whatsappLink").href = "https://api.whatsapp.com/send?phone=" + SEU_WHATSAPP + "&text=" + encodeURIComponent(msg);
 
+  fbq('track', 'Lead');
+  fbq('trackCustom', 'Lead_PME');
   // Mostrar resultado
   currentStep++;
   showScreen("resultScreen");
