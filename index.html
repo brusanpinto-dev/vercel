@@ -377,7 +377,7 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygfYaeNXicLP
 
 const PERGUNTAS = [
   {
-    titulo: "Quantos funcionários sua empresa tem?",
+    titulo: "Quantos funcionários ou familiares serão protegidos?",
     subtitulo: "Isso define a categoria do plano",
     opcoes: [
       { icone: "👤", texto: "1 a 29 funcionários" },
@@ -402,7 +402,7 @@ const PERGUNTAS = [
       { icone: "🏙️", texto: "Capital (zona sul, norte, oeste, centro)" },
       { icone: "🌆", texto: "Baixada Fluminense" },
       { icone: "🌊", texto: "Niterói e São Gonçalo" },
-      { icone: "🌿", texto: "Interior do estado" },
+      { icone: "🌿", texto: "Interior do estado ou região dos lagos" },
     ]
   },
   {
@@ -416,22 +416,11 @@ const PERGUNTAS = [
     ]
   },
   {
-    titulo: "Qual o orçamento mensal por funcionário?",
+    titulo: "A empresa é MEI?",
     subtitulo: "Valor aproximado que a empresa pode investir",
     opcoes: [
-      { icone: "📗", texto: "Até R$ 200" },
-      { icone: "📘", texto: "R$ 200 a R$ 400" },
-      { icone: "📙", texto: "R$ 400 a R$ 800" },
-      { icone: "📕", texto: "Acima de R$ 800" },
-    ]
-  },
-  {
-    titulo: "Precisa incluir dependentes?",
-    subtitulo: "Cônjuge e filhos dos funcionários",
-    opcoes: [
-      { icone: "👨‍👩‍👧", texto: "Sim, com dependentes" },
-      { icone: "👤", texto: "Não, só titulares" },
-      { icone: "🤔", texto: "Ainda não sei, preciso de orientação" },
+      { icone: "📗", texto: "SIM" },
+      { icone: "📘", texto: "NÃO" },
     ]
   },
 ];
@@ -557,7 +546,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
   card.innerHTML = html;
 
   // Montar link WhatsApp com dados
-  const msg = "🏥 *NOVO LEAD — Diagnóstico de Plano de Saúde*\n\n"
+  const msg = "🏥 *Consultoria gratuita — Diagnóstico de Plano de Saúde*\n\n"
     + "👤 *Nome:* " + nome + "\n"
     + "📱 *WhatsApp:* " + whatsapp + "\n"
     + "📧 *E-mail:* " + email + "\n"
