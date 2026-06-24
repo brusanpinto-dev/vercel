@@ -298,7 +298,7 @@ body{
   <div class="screen active" id="intro">
     <div class="intro">
       <div class="tag">Leva menos de 1 minuto</div>
-      <h1>Qual plano de saúde ideal para sua empresa?</h1>
+      <h1>Receba uma análise gratuita do seu plano atual e descubra o quanto pode economizar e/ou melhorar.</h1>
       <p>Responda algumas perguntas e descubra a melhor opção para o seu time.</p>
       <button class="btn-primary" onclick="startQuiz()">Iniciar diagnóstico</button>
     </div>
@@ -347,13 +347,13 @@ body{
   <!-- RESULT -->
   <div class="screen" id="resultScreen">
     <div class="result">
-      <h2>Seu diagnóstico está pronto</h2>
+      <h2>Nossa especialista recebeu suas informações e fará seu estudo de caso</h2>
       <p class="subtitle">Veja o resumo e fale com nossa especialista.</p>
       <div class="result-card" id="resultCard"></div>
       <a class="btn-whatsapp" id="whatsappLink" href="#" target="_blank" onclick="fbq('track', 'Contact');">
-        Receber proposta no WhatsApp
+        Desejo receber o estudo de caso
       </a>
-      <p class="privacy">Bruna vai analisar seu perfil e enviar as melhores opções.</p>
+      <p class="privacy">Bruna vai analisar seu plano atual e enviar as melhores opções.</p>
     </div>
   </div>
 
@@ -377,7 +377,7 @@ const GOOGLE_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbygfYaeNXicLP
 
 const PERGUNTAS = [
   {
-    titulo: "Quantos funcionários ou familiares serão protegidos?",
+    titulo: "Quantos funcionários ou familiares estão protegidos?",
     subtitulo: "Isso define a categoria do plano",
     opcoes: [
       { icone: "👤", texto: "1 a 29 funcionários" },
