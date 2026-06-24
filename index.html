@@ -150,6 +150,20 @@ body{
   font-size:20px;
   flex-shrink:0;
 }
+.text-answer-input{
+  width:100%;
+  padding:18px 22px;
+  border:1.5px solid #e0e0e0;
+  border-radius:14px;
+  font-size:17px;
+  font-family:inherit;
+  outline:none;
+  transition:border 0.2s;
+  margin-bottom:16px;
+}
+.text-answer-input:focus{
+  border-color:#111;
+}
 
 /* ---- LEAD FORM ---- */
 .lead-form h2{
@@ -331,12 +345,8 @@ body{
           <input type="email" name="email" id="leadEmail" placeholder="maria@empresa.com.br" required>
           </div>
         <div class="field">
-          <label>Operadora atual</label>
-          <input type="text" name="empresa" id="leadEmpresa" placeholder="Ex:Amil, Porto, Sulamerica...">
-        </div>
-        <div class="field">
           <label>CNPJ</label>
-          <input type="text" name="empresa" id="leadEmpresa" placeholder="Ex: 13.000.000.0001/79">
+          <input type="text" name="cnpj" id="leadCnpj" placeholder="Ex: 13.000.000.0001/79">
         </div>
         <button type="submit" class="btn-primary">Ver meu diagnóstico</button>
         <p class="privacy">Seus dados estão seguros. Não compartilhamos com terceiros.</p>
@@ -380,20 +390,22 @@ const PERGUNTAS = [
     titulo: "Quantos funcionários ou familiares estão protegidos?",
     subtitulo: "Isso define a categoria do plano",
     opcoes: [
-      { icone: "👤", texto: "1 a 29 funcionários" },
-      { icone: "👥", texto: "30 a 99 funcionários" },
-      { icone: "🏢", texto: "100 a 199 funcionários" },
-      { icone: "🏗️", texto: "200 ou mais" },
+      { icone: "👤", texto: "1 a 5 vidas" },
+      { icone: "👥", texto: "10 a 30 vidas" },
+      { icone: "🏢", texto: "+ de 30 vidas" },
     ]
   },
   {
-    titulo: "Sua empresa já possui plano de saúde?",
+    titulo: "Qual sua plano de saúde atual?",
     subtitulo: "Entender o cenário atual ajuda na recomendação",
-    opcoes: [
-      { icone: "🔄", texto: "Sim, quero trocar de operadora" },
-      { icone: "📊", texto: "Sim, quero comparar com outras opções" },
-      { icone: "🆕", texto: "Não, quero contratar o primeiro" },
-    ]
+    tipo: "texto",
+    placeholder: "Ex: Amil, Bradesco..."
+  },
+  {
+    titulo: "Qual é o seu custo mensal com o plano atual?",
+    subtitulo: "Isso ajuda a comparar o custo-benefício",
+    tipo: "texto",
+    placeholder: "Ex: 2800,00"
   },
   {
     titulo: "Qual região do Rio de Janeiro?",
@@ -413,14 +425,6 @@ const PERGUNTAS = [
       { icone: "🏥", texto: "Melhor rede de hospitais" },
       { icone: "⚖️", texto: "Equilíbrio entre custo e cobertura" },
       { icone: "💳", texto: "Reembolso alto para livre escolha" },
-    ]
-  },
-  {
-    titulo: "A empresa é MEI?",
-    subtitulo: "Valor aproximado que a empresa pode investir",
-    opcoes: [
-      { icone: "📗", texto: "SIM" },
-      { icone: "📘", texto: "NÃO" },
     ]
   },
 ];
@@ -465,6 +469,25 @@ function renderQuestion() {
   const container = document.getElementById("optionsContainer");
   container.innerHTML = "";
 
+  if (q.tipo === "texto") {
+    const input = document.createElement("input");
+    input.type = "text";
+    input.className = "text-answer-input";
+    input.id = "textAnswerInput";
+    input.placeholder = q.placeholder || "";
+    input.onkeydown = (e) => { if (e.key === "Enter") submitTextAnswer(); };
+    container.appendChild(input);
+
+    const btn = document.createElement("button");
+    btn.className = "btn-primary";
+    btn.textContent = "Continuar";
+    btn.onclick = submitTextAnswer;
+    container.appendChild(btn);
+
+    setTimeout(() => input.focus(), 100);
+    return;
+  }
+
   q.opcoes.forEach((opt, i) => {
     const div = document.createElement("div");
     div.className = "option";
@@ -472,6 +495,28 @@ function renderQuestion() {
     div.onclick = () => selectOption(div, opt.texto, q.titulo);
     container.appendChild(div);
   });
+}
+
+function submitTextAnswer() {
+  const q = PERGUNTAS[currentStep - 1];
+  const input = document.getElementById("textAnswerInput");
+  const texto = input.value.trim();
+  if (!texto) {
+    input.focus();
+    return;
+  }
+
+  respostas[currentStep - 1] = { pergunta: q.titulo, resposta: texto };
+
+  currentStep++;
+  if (currentStep <= PERGUNTAS.length) {
+    renderQuestion();
+    showScreen("questionScreen");
+  } else {
+    fbq('trackCustom', 'QuizCompleto');
+    showScreen("leadForm");
+  }
+  updateProgress();
 }
 
 function selectOption(el, texto, pergunta) {
@@ -509,7 +554,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
   const nome = document.getElementById("leadNome").value.trim();
   const whatsapp = document.getElementById("leadWhatsapp").value.trim();
   const email = document.getElementById("leadEmail").value.trim();
-  const empresa = document.getElementById("leadEmpresa").value.trim();
+  const cnpj = document.getElementById("leadCnpj").value.trim();
 
   // Montar resumo das respostas
   const resumoArr = respostas.map((r, i) => (i + 1) + ". " + r.pergunta + "\n   → " + r.resposta);
@@ -518,13 +563,13 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
   document.getElementById("respostasHidden").value = resumoText;
 
   // Salvar no Google Sheets automaticamente
-  if (GOOGLE_SCRIPT_URL && GOOGLE_SCRIPT_URL !== "https://script.google.com/macros/s/AKfycbygfYaeNXicLPkSTb-Ex7T9SppOwolulyh_DEvYMIDQa3NRsaiGSUjKIppvvs5BShVV/exec") {
+  if (GOOGLE_SCRIPT_URL) {
     const dados = {
       data: new Date().toLocaleString("pt-BR"),
       nome: nome,
       whatsapp: whatsapp,
       email: email,
-      empresa: empresa || "Não informado",
+      cnpj: cnpj || "Não informado",
       respostas: resumoText
     };
     fetch(GOOGLE_SCRIPT_URL, {
@@ -541,7 +586,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
   respostas.forEach(r => {
     html += '<div class="result-item"><span class="label">' + r.pergunta.replace(/\?/g,"") + '</span><span class="value">' + r.resposta + '</span></div>';
   });
-  html += '<div class="result-item"><span class="label">Empresa</span><span class="value">' + (empresa || "—") + '</span></div>';
+  html += '<div class="result-item"><span class="label">CNPJ</span><span class="value">' + (cnpj || "—") + '</span></div>';
   html += '<div class="result-item"><span class="label">Contato</span><span class="value">' + nome + '</span></div>';
   card.innerHTML = html;
 
@@ -550,7 +595,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
     + "👤 *Nome:* " + nome + "\n"
     + "📱 *WhatsApp:* " + whatsapp + "\n"
     + "📧 *E-mail:* " + email + "\n"
-    + "🏢 *Empresa:* " + (empresa || "Não informado") + "\n\n"
+    + "🏢 *CNPJ:* " + (cnpj || "Não informado") + "\n\n"
     + "📋 *Respostas do Quiz:*\n\n"
     + resumoText + "\n\n"
     + "---\n"
