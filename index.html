@@ -569,7 +569,7 @@ document.getElementById("diagForm").addEventListener("submit", function(e) {
       nome: nome,
       whatsapp: whatsapp,
       email: email,
-      cnpj: cnpj || "Não informado",
+      empresa: cnpj || "Não informado",
       respostas: resumoText
     };
     fetch(GOOGLE_SCRIPT_URL, {
