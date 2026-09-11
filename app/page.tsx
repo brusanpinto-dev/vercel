@@ -95,7 +95,7 @@ export default function Home() {
             <label className="field full" htmlFor="name"><span>Como posso te chamar?</span><input id="name" autoComplete="name" required placeholder="Nome completo" value={form.name} onChange={(e) => update("name", e.target.value)} /></label>
             <label className="field" htmlFor="phone"><span>Seu WhatsApp com DDD</span><input id="phone" inputMode="tel" autoComplete="tel" required placeholder="(21) 99999-9999" value={form.phone} onChange={(e) => update("phone", e.target.value)} /></label>
             <label className="field" htmlFor="email"><span>Seu melhor e-mail</span><input id="email" type="email" autoComplete="email" required placeholder="voce@email.com" value={form.email} onChange={(e) => update("email", e.target.value)} /></label>
-            <SelectField id="situation" label="Qual é sua situação hoje?" value={form.situation} options={situationOptions} onChange={(value) => update("situation", value)} />
+            <SelectField id="situation" label="Qual é a sua situação atual?" value={form.situation} options={situationOptions} onChange={(value) => update("situation", value)} />
             <SelectField id="people" label="Quem será incluído?" value={form.people} options={peopleOptions} onChange={(value) => update("people", value)} />
             <SelectField id="region" label="Em qual região você mora?" value={form.region} options={regionOptions} onChange={(value) => update("region", value)} />
             <SelectField id="hospital" label="Qual hospital você gostaria de ter acesso?" value={form.hospital} options={hospitalOptions} onChange={(value) => update("hospital", value)} />
