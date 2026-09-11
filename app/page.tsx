@@ -13,7 +13,7 @@ const situationOptions = [
   "Busco um plano para minha empresa ou equipe",
 ];
 
-const peopleOptions = ["Somente para mim", "2 pessoas", "3 a 5 pessoas", "6 a 10 pessoas", "Empresa com 11 ou mais pessoas"];
+const peopleOptions = ["Somente eu", "2 pessoas", "3 a 5 pessoas", "6 a 10 pessoas", "Empresa com 11 ou mais pessoas"];
 const regionOptions = ["Barra e Recreio", "Zona Sul", "Tijuca e Grande Tijuca", "Méier e Zona Norte", "Baixada Fluminense", "Niterói e São Gonçalo", "Região dos Lagos", "Outra região do Rio de Janeiro", "Outro estado"];
 const hospitalOptions = [
   "Copa Star",
